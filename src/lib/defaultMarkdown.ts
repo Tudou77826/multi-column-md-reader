@@ -1,74 +1,152 @@
 export const defaultMarkdown = `
-# The Architecture of Tomorrow
+# 多列 Markdown 阅读器
 
-<span class="text-[11px] font-bold uppercase tracking-[0.3em] text-[hsl(var(--muted-foreground))] mb-4 block">Draft #04 — Design Essay</span>
+<span class="text-[11px] font-bold uppercase tracking-[0.3em] text-[hsl(var(--muted-foreground))] mb-4 block">Chronicle — 一个优雅的阅读体验</span>
 
-The digital landscape is undergoing a silent transformation. We are moving away from the cluttered interfaces of the past decade toward a more intentional, editorial approach to content consumption.
+这是一个功能完备的多列 Markdown 阅读器，专为长文档阅读设计。它模拟了传统报纸杂志的排版方式，让你的眼睛在垂直方向上舒适地扫描文本，避免了单列长文章带来的视觉疲劳。
 
-Markdown has become the lingua franca of this movement. Its simplicity allows the writer to focus purely on the structural integrity of the message, leaving the presentation to be handled by sophisticated rendering engines that honor the legacy of print media.
+## ✨ 功能亮点
 
-## I. The Grid System
+本阅读器支持丰富的 Markdown 特性，让你专注于内容本身：
 
-As we observe in classical layout design, the use of a strict grid provides a sense of comfort and predictability. In a multi-column reader, the vertical rhythm is preserved, allowing the eye to scan text without the fatigue associated with long line lengths.
-
-Modern typography on the web now rivals the quality of traditional offset printing. With the advent of variable fonts and advanced CSS properties like \`shape-outside\` and \`text-wrap: balance\`, the web is finally becoming a first-class medium for long-form reading.
-
-> "Design is not just what it looks like and feels like. Design is how it works in the context of the human mind."
-
-By treating digital documents as physical objects, we respect the user's attention. The lack of distracting animations and the focus on high-contrast, legible type is a rebellion against the attention economy that defines much of our contemporary experience.
+- **多列布局** — 可调节 1-5 列，自定义间距
+- **排版控制** — 字体、字号、行高、对齐方式
+- **Mermaid 图表** — 流程图、时序图、甘特图等
+- **表格扩展** — 大型表格可展开查看
+- **代码高亮** — 支持多种编程语言
+- **深色模式** — 护眼阅读体验
 
 ---
 
-### II. Typographic Rhythm
+## 📊 数据展示
 
-Lists and syntax elements should support, rather than break, vertical rhythm:
+阅读器对表格和图表有良好的支持。下面是一个技术对比表：
 
-- **Hierarchy:** Establish clear relationships between primary, secondary, and tertiary elements.
-- **Contrast:** Utilize weight, size, and style to differentiate structural components.
-- **Whitespace:** Emptiness is an active structural element, not simply the absence of content.
+| 特性 | 传统阅读器 | Chronicle | 优势 |
+|------|------------|-----------|------|
+| 列数 | 单列固定 | 1-5列可调 | 适应不同内容 |
+| 字体 | 系统默认 | Sans/Serif/Mono | 专业排版感 |
+| 图表 | 需外链 | 内嵌渲染 | 一体化体验 |
+| 滚动 | 纵向 | 横向翻页 | 报纸阅读感 |
 
-\`\`\`css
-/* Minimalist Typographic Rules */
-body {
-  font-family: var(--font-serif);
-  line-height: 1.7;
-}
+### 代码示例
 
-pre, code {
-  font-family: var(--font-mono);
-  font-size: 0.9em;
+支持语法高亮，让代码更易读：
+
+\`\`\`typescript
+// React 组件示例
+import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      点击次数: {count}
+    </button>
+  );
 }
 \`\`\`
 
-| Attribute     | Classical Setting | Digital Equivalent |
-| ------------- | :------------- | :---------------- |
-| Margins       | Golden Ratio | vw/vh CSS units |
-| Leading       | 1.2 to 1.5 | 1.6 to 1.8 |
-| Tracking      | Modest | Letter-spacing |
+\`\`\`python
+# Python 示例
+def fibonacci(n: int) -> list[int]:
+    """生成斐波那契数列"""
+    a, b = 0, 1
+    result = []
+    while a < n:
+        result.append(a)
+        a, b = b, a + b
+    return result
 
-### III. Complex Data & Diagrams
+print(fibonacci(100))  # [0, 1, 1, 2, 3, 5, 8, 13, 21, ...]
+\`\`\`
 
-We commonly need to understand the relationships between different data points. Here is a large table summarizing browser statistics:
+---
 
-| Browser | Engine | Developer | CSS Support | JavaScript Engine | Market Share | Notes |
-|---------|--------|-----------|-------------|-------------------|--------------|-------|
-| Chrome  | Blink  | Google    | Excellent   | V8                | ~65%         | Standard setting browser for modern web APIs. |
-| Safari  | WebKit | Apple     | Good        | JavaScriptCore    | ~18%         | Deeply integrated into the Apple ecosystem. |
-| Edge    | Blink  | Microsoft | Excellent   | V8                | ~5%          | Default on Windows, strong enterprise adoption. |
-| Firefox | Gecko  | Mozilla   | Excellent   | SpiderMonkey      | ~3%          | Champion of privacy and open web standards. |
+## 🔀 Mermaid 图表
 
-And visualizing complex architectures requires diagramming tools like Mermaid:
+点击图表可以展开，支持 **无限缩放** 和 **自由拖拽**：
+
+### 流程图
 
 \`\`\`mermaid
-flowchart TD
-    A[Client Request] -->|REST API| B(Load Balancer)
-    B --> C{Web Server}
-    C -->|Static Assets| D[CDN]
-    C -->|Dynamic Data| E[App Server]
-    E --> F[(Primary Database)]
-    E -.->|Cache| G[Redis Cluster]
-    F --> H[(Read Replica)]
+flowchart LR
+    A[用户输入] --> B{解析 Markdown}
+    B --> C[渲染内容]
+    C --> D[多列布局]
+    D --> E[显示结果]
+    B -->|错误| F[显示错误提示]
 \`\`\`
 
-As we continue to build tools for thought, reading, and publishing, let us remember that formatting is transient, but the structure is enduring.
+### 时序图
+
+\`\`\`mermaid
+sequenceDiagram
+    participant U as 用户
+    participant R as Reader
+    participant M as Mermaid
+    U->>R: 输入 Markdown
+    R->>R: 解析内容
+    R->>M: 检测 mermaid 代码块
+    M->>M: 渲染 SVG
+    M-->>R: 返回图表
+    R-->>U: 展示结果
+\`\`\`
+
+### 类图
+
+\`\`\`mermaid
+classDiagram
+    class MarkdownViewer {
+        +content: string
+        +theme: Theme
+        +render()
+    }
+    class MermaidRenderer {
+        +code: string
+        +svg: string
+        +initialize()
+    }
+    class ExpandableView {
+        +isExpanded: boolean
+        +scale: number
+        +toggle()
+        +zoom()
+    }
+    MarkdownViewer --> MermaidRenderer
+    MarkdownViewer --> ExpandableView
+\`\`\`
+
+---
+
+## 📝 引用与列表
+
+> "阅读是一场与作者的对话。好的排版，让这场对话更加流畅。"
+>
+> — 佚名
+
+任务列表也是一种实用的格式：
+
+- [x] 多列布局实现
+- [x] Mermaid 图表渲染
+- [x] 无限缩放功能
+- [x] 拖拽平移功能
+- [x] 深色模式支持
+- [ ] 导出 PDF 功能
+- [ ] 书签保存功能
+
+---
+
+## 🎯 使用建议
+
+1. **调整列数** — 根据屏幕宽度和内容类型选择合适的列数
+2. **选择字体** — Serif 适合长文阅读，Sans 适合技术文档
+3. **控制行高** — 1.6-1.8 的行高适合大多数场景
+4. **使用图表** — 复杂逻辑用 Mermaid 图表可视化
+5. **深色模式** — 夜间阅读时开启，保护眼睛
+
+---
+
+*Chronicle — 让阅读回归优雅。*
 `;

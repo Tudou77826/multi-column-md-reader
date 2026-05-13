@@ -4,8 +4,15 @@
 
 一个功能完备的多列 Markdown 阅读器，支持高度自定义的排版和响应式阅读体验。
 
-**[在线演示](https://tudou77826.github.io/multi-column-md-reader)** | **[功能特性](#功能特性)** | **[快速开始](#快速开始)**
+</div>
 
+<div align="center">
+  <img src="screenshots/light-mode.png" alt="Light Mode" width="45%">
+  <img src="screenshots/dark-mode.png" alt="Dark Mode" width="45%">
+</div>
+
+<div align="center">
+  <em>浅色模式 & 深色模式</em>
 </div>
 
 ---
@@ -30,6 +37,10 @@
 - **自由拖拽**: 鼠标拖动平移
 - 缩放控制按钮 + 重置功能
 
+<div align="center">
+  <img src="screenshots/mermaid-expand.png" alt="Mermaid Expand" width="60%">
+</div>
+
 ### 📋 表格扩展
 - 预览模式限制高度
 - 点击展开全屏查看
@@ -41,6 +52,8 @@
 - 直接粘贴 Markdown 内容
 - 代码语法高亮 (Prism)
 - GFM 支持 (表格、任务列表等)
+
+---
 
 ## 快速开始
 
@@ -71,6 +84,8 @@ npm run build
 npm run preview
 ```
 
+---
+
 ## 使用说明
 
 | 功能 | 操作 |
@@ -78,11 +93,13 @@ npm run preview
 | 导入文件 | 点击 "Import File" 按钮 |
 | 输入内容 | 在文本框中直接粘贴 Markdown |
 | 切换列数 | 调整 "Columns" 滑块 |
-| 调整间距 | 调整 "Gap" 昑块 |
+| 调整间距 | 调整 "Gap" 滑块 |
 | 修改字号 | 调整 "Font Size" 滑块 |
 | 缩放图表 | 打开图表后滚动鼠标滚轮 |
 | 拖拽图表 | 在展开的图表上按住鼠标拖动 |
 | 切换主题 | 点击底部 "Dark Mode" 按钮 |
+
+---
 
 ## 技术栈
 
@@ -95,10 +112,13 @@ npm run preview
 | react-markdown | 10 | Markdown解析 |
 | Lucide | - | 图标库 |
 
+---
+
 ## 目录结构
 
 ```
 multi-column-md-reader/
+├── screenshots/           # 效果截图
 ├── src/
 │   ├── components/
 │   │   ├── ExpandableView.tsx    # 可展开视图 (图表/表格)
@@ -115,6 +135,8 @@ multi-column-md-reader/
 ├── vite.config.ts
 └── README.md
 ```
+
+---
 
 ## License
 
