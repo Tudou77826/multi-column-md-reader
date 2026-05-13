@@ -144,9 +144,9 @@ export const ExpandableView: React.FC<ExpandableViewProps> = ({
       </div>
 
       {isExpanded && createPortal(
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-black/60 backdrop-blur-sm md-reader">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm md-reader">
           <div
-            className="relative bg-[hsl(var(--background))] w-full max-w-6xl max-h-[90vh] overflow-hidden p-1 rounded-sm shadow-2xl flex flex-col"
+            className="relative bg-[hsl(var(--background))] w-full h-[90vh] overflow-hidden rounded-sm shadow-2xl flex flex-col"
             onClick={(e) => e.stopPropagation()}
             style={{ columnCount: 'initial', columnWidth: 'initial', columnFill: 'initial' }}
           >
