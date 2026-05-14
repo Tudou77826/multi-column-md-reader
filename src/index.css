@@ -132,3 +132,11 @@ body {
   @apply text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--primary-foreground))] transition-colors underline underline-offset-4 decoration-[hsl(var(--border))];
 }
 
+/* Heading scroll margin for anchor navigation */
+.md-reader h1[id],
+.md-reader h2[id],
+.md-reader h3[id],
+.md-reader h4[id] {
+  scroll-margin-top: 60px;
+}
+

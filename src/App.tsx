@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Settings2, Upload, AlignLeft, AlignJustify, Moon, Sun, Type, Columns, SplitSquareVertical, ArrowLeftRight, FileText, ChevronLeft, ChevronRight, Menu, X, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { MarkdownViewer } from './components/MarkdownViewer';
+import { FloatingTOC } from './components/FloatingTOC';
 import { defaultMarkdown } from './lib/defaultMarkdown';
 import { cn } from './lib/utils';
+import { extractHeadings, uniqueHeadings, Heading } from './lib/toc';
 
 export default function App() {
   const [content, setContent] = useState(defaultMarkdown);
@@ -13,9 +15,14 @@ export default function App() {
   const [fontFamily, setFontFamily] = useState<'sans' | 'serif' | 'mono'>('sans');
   const [textAlign, setTextAlign] = useState<'left' | 'justify'>('left');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [headings, setHeadings] = useState<Heading[]>([]);
+  const [activeHeadingId, setActiveHeadingId] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Undo history for paste operations
+  const contentHistoryRef = useRef<string[]>([defaultMarkdown]);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -26,6 +33,59 @@ export default function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);
+
+  // Compute headings when content changes
+  useEffect(() => {
+    const rawHeadings = extractHeadings(content);
+    setHeadings(uniqueHeadings(rawHeadings));
+  }, [content]);
+
+  // Global paste handler for Ctrl+V to replace content
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      // Prevent handling when user is typing in textarea or input
+      const activeElement = document.activeElement;
+      if (activeElement && (
+        activeElement.tagName === 'TEXTAREA' ||
+        activeElement.tagName === 'INPUT'
+      )) {
+        return; // Let the normal paste behavior work
+      }
+
+      const clipboardData = e.clipboardData;
+      if (!clipboardData) return;
+
+      const text = clipboardData.getData('text/plain');
+      if (text) {
+        // Save current content to history for undo
+        contentHistoryRef.current.push(content);
+        setContent(text);
+      }
+    };
+
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, [content]);
+
+  // Global undo handler for Ctrl+Z
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+Z or Cmd+Z for undo
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        const history = contentHistoryRef.current;
+        if (history.length > 1) {
+          // Pop current content and restore previous
+          history.pop();
+          const previousContent = history[history.length - 1];
+          setContent(previousContent);
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Handle horizontal scrolling and pagination
   useEffect(() => {
@@ -80,6 +140,14 @@ export default function App() {
     }
   };
 
+  const scrollToHeading = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveHeadingId(id);
+    }
+  };
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[hsl(var(--background))]">
       {/* Sidebar Controls */}
@@ -98,28 +166,23 @@ export default function App() {
         <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-8 min-w-[320px] text-sm">
           {/* File Input */}
           <div className="space-y-3">
-            <div className="flex gap-2">
-              <button 
-                onClick={() => fileInputRef.current?.click()}
-                className="flex items-center justify-center flex-1 gap-2 border border-[hsl(var(--primary))] text-[hsl(var(--primary))] rounded-none px-4 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--primary-foreground))] transition-colors"
-              >
-                <Upload className="w-4 h-4" />
-                Import File
-              </button>
-              <input 
-                type="file" 
-                accept=".md,.txt" 
-                ref={fileInputRef}
-                onChange={handleFileUpload}
-                className="hidden" 
-              />
-            </div>
-            <textarea 
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="或者在这里粘贴 Markdown 代码..."
-              className="w-full h-32 rounded-none border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3 py-2 text-xs focus:outline-none focus:border-[hsl(var(--primary))] focus:ring-1 focus:ring-[hsl(var(--primary))] font-mono resize-none"
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center justify-center w-full gap-2 border border-[hsl(var(--primary))] text-[hsl(var(--primary))] rounded-none px-4 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--primary-foreground))] transition-colors"
+            >
+              <Upload className="w-4 h-4" />
+              Import File
+            </button>
+            <input
+              type="file"
+              accept=".md,.txt"
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              className="hidden"
             />
+            <p className="text-[10px] text-[hsl(var(--muted-foreground))] text-center">
+              Ctrl+V to paste, Ctrl+Z to undo
+            </p>
           </div>
 
           {/* Layout Configurations */}
@@ -257,9 +320,10 @@ export default function App() {
               className="w-full h-full overflow-x-auto overflow-y-hidden hide-scrollbar"
               style={{ containerType: 'size' }}
             >
-              <MarkdownViewer 
-                content={content} 
+              <MarkdownViewer
+                content={content}
                 theme={theme}
+                headings={headings}
                 className="h-full"
                 style={{
                   columnWidth: `calc((100cqw - ${(columns - 1) * gap}px) / ${columns})`,
@@ -273,7 +337,14 @@ export default function App() {
               />
             </div>
           </div>
-          
+
+          {/* Floating Table of Contents */}
+          <FloatingTOC
+            headings={headings}
+            activeId={activeHeadingId}
+            onHeadingClick={scrollToHeading}
+          />
+
           {/* Footer Status Bar with Pagination */}
           <footer className="px-8 py-3 border-t border-[hsl(var(--border))] flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-[hsl(var(--muted-foreground))] bg-[hsl(var(--sidebar))] z-10 flex-shrink-0">
             <div className="flex gap-6 items-center">

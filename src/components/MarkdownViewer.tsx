@@ -6,15 +6,28 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { cn } from '../lib/utils';
 import { ExpandableView } from './ExpandableView';
 import { MermaidRenderer } from './MermaidRenderer';
+import { Heading } from '../lib/toc';
 
 interface MarkdownViewerProps {
   content: string;
   theme: 'light' | 'dark';
   className?: string;
   style?: React.CSSProperties;
+  headings?: Heading[];
 }
 
-export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, theme, className, style }) => {
+export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, theme, className, style, headings }) => {
+  // Create ID lookup map
+  const headingIdMap = new Map<string, string>();
+  if (headings) {
+    headings.forEach(h => headingIdMap.set(h.text, h.id));
+  }
+
+  const getHeadingId = (children: React.ReactNode): string => {
+    const text = String(children);
+    return headingIdMap.get(text) || text.toLowerCase().replace(/\s+/g, '-');
+  };
+
   const components: Components = {
     code(props) {
       const { children, className, node, ...rest } = props;
@@ -53,6 +66,26 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, theme, 
           </div>
         </ExpandableView>
       );
+    },
+    h1(props) {
+      const { children, ...rest } = props;
+      const id = getHeadingId(children);
+      return <h1 id={id} {...rest}>{children}</h1>;
+    },
+    h2(props) {
+      const { children, ...rest } = props;
+      const id = getHeadingId(children);
+      return <h2 id={id} {...rest}>{children}</h2>;
+    },
+    h3(props) {
+      const { children, ...rest } = props;
+      const id = getHeadingId(children);
+      return <h3 id={id} {...rest}>{children}</h3>;
+    },
+    h4(props) {
+      const { children, ...rest } = props;
+      const id = getHeadingId(children);
+      return <h4 id={id} {...rest}>{children}</h4>;
     }
   };
 
