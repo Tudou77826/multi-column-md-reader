@@ -49,7 +49,8 @@
 ### 🌓 其他特性
 - Dark / Light 模式切换
 - 导入本地 `.md` / `.txt` 文件
-- 直接粘贴 Markdown 内容
+- **全局粘贴**: Ctrl+V 直接替换内容，Ctrl+Z 撤销
+- **悬浮目录**: 可拖拽的目录大纲，快速导航
 - 代码语法高亮 (Prism)
 - GFM 支持 (表格、任务列表等)
 
@@ -91,7 +92,9 @@ npm run preview
 | 功能 | 操作 |
 |------|------|
 | 导入文件 | 点击 "Import File" 按钮 |
-| 输入内容 | 在文本框中直接粘贴 Markdown |
+| 粘贴内容 | Ctrl+V 全局粘贴，Ctrl+Z 撤销 |
+| 打开目录 | 点击右下角悬浮按钮 |
+| 移动目录 | 拖拽悬浮按钮到任意位置 |
 | 切换列数 | 调整 "Columns" 滑块 |
 | 调整间距 | 调整 "Gap" 滑块 |
 | 修改字号 | 调整 "Font Size" 滑块 |
@@ -122,10 +125,12 @@ multi-column-md-reader/
 ├── src/
 │   ├── components/
 │   │   ├── ExpandableView.tsx    # 可展开视图 (图表/表格)
+│   │   ├── FloatingTOC.tsx       # 悬浮目录组件
 │   │   ├── MarkdownViewer.tsx    # Markdown渲染器
 │   │   └── MermaidRenderer.tsx   # Mermaid图表渲染
 │   ├── lib/
 │   │   ├── defaultMarkdown.ts    # 默认示例内容
+│   │   ├── toc.ts                # 目录提取工具
 │   │   └── utils.ts              # 工具函数
 │   ├── App.tsx                   # 主应用组件
 │   ├── index.css                 # 全局样式
